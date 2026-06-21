@@ -3,20 +3,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Alert {
   final String alertId;
   final String deviceId;
+  final String roomName;
+  final String severity; // warning, critical
   final String title;
   final String description;
-  final String severity;
-  final DateTime timestamp;
+  final DateTime createdAt;
   final bool resolved;
+  final String? recommendedAction;
 
   Alert({
     required this.alertId,
     required this.deviceId,
+    required this.roomName,
+    required this.severity,
     required this.title,
     required this.description,
-    required this.severity,
-    required this.timestamp,
+    required this.createdAt,
     required this.resolved,
+    this.recommendedAction,
   });
 
   factory Alert.fromFirestore(DocumentSnapshot doc) {
@@ -24,40 +28,26 @@ class Alert {
     return Alert(
       alertId: doc.id,
       deviceId: data['deviceId'] ?? '',
+      roomName: data['roomName'] ?? '',
+      severity: data['severity'] ?? 'warning',
       title: data['title'] ?? '',
       description: data['description'] ?? '',
-      severity: data['severity'] ?? 'Info',
-      timestamp: (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      createdAt: (data['createdAt'] as Timestamp).toDate(),
       resolved: data['resolved'] ?? false,
+      recommendedAction: data['recommendedAction'],
     );
   }
 
-  Map<String, dynamic> toMap() => {
-    'deviceId': deviceId,
-    'title': title,
-    'description': description,
-    'severity': severity,
-    'timestamp': Timestamp.fromDate(timestamp),
-    'resolved': resolved,
-  };
-
-  Alert copyWith({
-    String? alertId,
-    String? deviceId,
-    String? title,
-    String? description,
-    String? severity,
-    DateTime? timestamp,
-    bool? resolved,
-  }) {
-    return Alert(
-      alertId: alertId ?? this.alertId,
-      deviceId: deviceId ?? this.deviceId,
-      title: title ?? this.title,
-      description: description ?? this.description,
-      severity: severity ?? this.severity,
-      timestamp: timestamp ?? this.timestamp,
-      resolved: resolved ?? this.resolved,
-    );
+  Map<String, dynamic> toMap() {
+    return {
+      'deviceId': deviceId,
+      'roomName': roomName,
+      'severity': severity,
+      'title': title,
+      'description': description,
+      'createdAt': Timestamp.fromDate(createdAt),
+      'resolved': resolved,
+      'recommendedAction': recommendedAction,
+    };
   }
 }

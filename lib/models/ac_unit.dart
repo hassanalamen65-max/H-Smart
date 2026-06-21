@@ -7,9 +7,9 @@ class ACUnit {
   final double temperature;
   final double humidity;
   final double powerUsage;
-  final String status;
+  final String status; // operational, warning, critical
   final double performance;
-  final int fanSpeed;
+  final String fanSpeed;
   final DateTime lastUpdate;
 
   ACUnit({
@@ -34,49 +34,25 @@ class ACUnit {
       temperature: (data['temperature'] ?? 0).toDouble(),
       humidity: (data['humidity'] ?? 0).toDouble(),
       powerUsage: (data['powerUsage'] ?? 0).toDouble(),
-      status: data['status'] ?? 'Operational',
+      status: data['status'] ?? 'operational',
       performance: (data['performance'] ?? 0).toDouble(),
-      fanSpeed: data['fanSpeed'] ?? 0,
-      lastUpdate: (data['lastUpdate'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      fanSpeed: data['fanSpeed'] ?? 'Low',
+      lastUpdate: (data['lastUpdate'] as Timestamp).toDate(),
     );
   }
 
-  Map<String, dynamic> toMap() => {
-    'deviceId': deviceId,
-    'deviceName': deviceName,
-    'roomName': roomName,
-    'temperature': temperature,
-    'humidity': humidity,
-    'powerUsage': powerUsage,
-    'status': status,
-    'performance': performance,
-    'fanSpeed': fanSpeed,
-    'lastUpdate': Timestamp.fromDate(lastUpdate),
-  };
-
-  ACUnit copyWith({
-    String? deviceId,
-    String? deviceName,
-    String? roomName,
-    double? temperature,
-    double? humidity,
-    double? powerUsage,
-    String? status,
-    double? performance,
-    int? fanSpeed,
-    DateTime? lastUpdate,
-  }) {
-    return ACUnit(
-      deviceId: deviceId ?? this.deviceId,
-      deviceName: deviceName ?? this.deviceName,
-      roomName: roomName ?? this.roomName,
-      temperature: temperature ?? this.temperature,
-      humidity: humidity ?? this.humidity,
-      powerUsage: powerUsage ?? this.powerUsage,
-      status: status ?? this.status,
-      performance: performance ?? this.performance,
-      fanSpeed: fanSpeed ?? this.fanSpeed,
-      lastUpdate: lastUpdate ?? this.lastUpdate,
-    );
+  Map<String, dynamic> toMap() {
+    return {
+      'deviceId': deviceId,
+      'deviceName': deviceName,
+      'roomName': roomName,
+      'temperature': temperature,
+      'humidity': humidity,
+      'powerUsage': powerUsage,
+      'status': status,
+      'performance': performance,
+      'fanSpeed': fanSpeed,
+      'lastUpdate': Timestamp.fromDate(lastUpdate),
+    };
   }
 }
